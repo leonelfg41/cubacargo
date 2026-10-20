@@ -14,6 +14,9 @@ dependencies:
   cloud_firestore: ^5.1.0
   firebase_storage: ^12.1.0
   provider: ^6.1.2
+  geolocator: ^12.0.0
+  permission_handler: ^11.3.1
+  google_maps_flutter: ^2.9.0   # o flutter_map + latlong2, que no necesita API key
 
   cupertino_icons: ^1.0.0
 
