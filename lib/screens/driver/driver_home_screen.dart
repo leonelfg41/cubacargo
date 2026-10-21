@@ -1,7 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:cubacargo/services/location_service.dart';
 
 class DriverHomeScreen extends StatelessWidget {
   const DriverHomeScreen({super.key});
+
+  Future<void> _testGps(BuildContext context) async {
+    final locationService = LocationService();
+    final position = await locationService.getCurrentPosition();
+
+    if (!context.mounted) return;
+
+    if (position == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo obtener ubicación. Revisa permisos/GPS.'),
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'GPS OK -> Lat: ${position.latitude}, Lng: ${position.longitude}',
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +36,12 @@ class DriverHomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            ElevatedButton.icon(
+              onPressed: () => _testGps(context),
+              icon: const Icon(Icons.my_location),
+              label: const Text('Probar GPS'),
+            ),
+            const SizedBox(height: 16),
             _HomeCard(
               title: 'Cargas disponibles',
               subtitle: 'Busca viajes por zona y tipo de carga.',
