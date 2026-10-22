@@ -7,7 +7,10 @@ class FirestoreService {
     required String uid,
     required Map<String, dynamic> data,
   }) async {
-    await _firestore.collection('users').doc(uid).set(data, SetOptions(merge: true));
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .set(data, SetOptions(merge: true));
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUser(String uid) async {
@@ -25,5 +28,19 @@ class FirestoreService {
   Future<List<Map<String, dynamic>>> getLoads() async {
     final snapshot = await _firestore.collection('loads').get();
     return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  /// Cargas publicadas por un cliente (se actualiza en tiempo real).
+  Stream<List<Map<String, dynamic>>> streamLoadsByClient(String uid) {
+    return _firestore
+        .collection('loads')
+        .where('clientId', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) {
+              return {
+                ...doc.data(),
+                'id': doc.id,
+              };
+            }).toList());
   }
 }
