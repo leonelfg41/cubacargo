@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cubacargo/config/app_routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,6 +13,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +61,17 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: _handleLogin,
+                onPressed: _loading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 52),
                 ),
-                child: const Text('Iniciar sesión'),
+                child: _loading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Iniciar sesión'),
               ),
               const SizedBox(height: 12),
               TextButton(
@@ -71,17 +87,59 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleLogin() {
+  Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Completa email y contraseña')),
-      );
+      _msg('Completa email y contraseña');
       return;
     }
 
-    Navigator.pushReplacementNamed(context, AppRoutes.clientHome);
+    setState(() => _loading = true);
+
+    try {
+      final cred = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      final uid = cred.user!.uid;
+      final snap =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      final role = (snap.data()?['role'] ?? '').toString().toLowerCase().trim();
+      debugPrint('UID: $uid ROLE: $role');
+
+      if (!mounted) return;
+
+      String route;
+      switch (role) {
+        case 'chofer':
+          route = AppRoutes.driverHome;
+          break;
+        case 'admin':
+          route = AppRoutes.adminHome;
+          break;
+        case 'cliente':
+          route = AppRoutes.clientHome;
+          break;
+        default:
+          _msg('Tu usuario no tiene un rol válido');
+          await FirebaseAuth.instance.signOut();
+          return;
+      }
+
+      Navigator.pushNamedAndRemoveUntil(context, route, (_) => false);
+    } on FirebaseAuthException catch (e) {
+      _msg(e.message ?? 'Error al iniciar sesión');
+    } catch (e) {
+      _msg('Error: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _msg(String text) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 }

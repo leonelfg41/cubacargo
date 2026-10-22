@@ -6,19 +6,19 @@ class AvailableLoadsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loads = [
-      _LoadItem(
+      const _LoadItem(
         origin: 'La Habana',
         destination: 'Varadero',
         type: 'Materiales de construcción',
         weight: '4.5 ton',
       ),
-      _LoadItem(
+      const _LoadItem(
         origin: 'Santa Clara',
         destination: 'Holguín',
         type: 'Productos agrícolas',
         weight: '2.1 ton',
       ),
-      _LoadItem(
+      const _LoadItem(
         origin: 'Camagüey',
         destination: 'Santiago de Cuba',
         type: 'Equipo industrial',
@@ -42,7 +42,8 @@ class AvailableLoadsScreen extends StatelessWidget {
                 children: [
                   Text(
                     '${load.origin} → ${load.destination}',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(load.type),

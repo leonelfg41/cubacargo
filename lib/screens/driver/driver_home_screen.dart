@@ -1,32 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cubacargo/services/location_service.dart';
 
 class DriverHomeScreen extends StatelessWidget {
   const DriverHomeScreen({super.key});
-
-  Future<void> _testGps(BuildContext context) async {
-    final locationService = LocationService();
-    final position = await locationService.getCurrentPosition();
-
-    if (!context.mounted) return;
-
-    if (position == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No se pudo obtener ubicación. Revisa permisos/GPS.'),
-        ),
-      );
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'GPS OK -> Lat: ${position.latitude}, Lng: ${position.longitude}',
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +11,6 @@ class DriverHomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            ElevatedButton.icon(
-              onPressed: () => _testGps(context),
-              icon: const Icon(Icons.my_location),
-              label: const Text('Probar GPS'),
-            ),
-            const SizedBox(height: 16),
             _HomeCard(
               title: 'Cargas disponibles',
               subtitle: 'Busca viajes por zona y tipo de carga.',
@@ -89,7 +58,8 @@ class _HomeCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+          backgroundColor:
+              Theme.of(context).primaryColor.withValues(alpha: 0.1),
           child: Icon(icon, color: Theme.of(context).primaryColor),
         ),
         title: Text(title),
