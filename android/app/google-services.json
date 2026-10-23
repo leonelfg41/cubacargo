@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "916878675104",
+    "firebase_url": "https://cubacargo-fb-default-rtdb.firebaseio.com",
+    "project_id": "cubacargo-fb",
+    "storage_bucket": "cubacargo-fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916878675104:android:8d71393201ff475c45cdc5",
+        "android_client_info": {
+          "package_name": "com.example.cubacargo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqFZc3yIa9hip9dV7QO9-3t1pHfE2TiJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

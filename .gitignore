@@ -51,3 +51,5 @@
 !**/android/key.properties
 !**/android/local.properties
 !**/android/app/debug.keystore
+# Widget Preview related
+.widget_preview/
