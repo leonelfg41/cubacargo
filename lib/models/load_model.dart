@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum LoadStatus {
   pending,
+  published, // <- NUEVO
   accepted,
   inTransit,
   completed,
@@ -9,6 +10,8 @@ enum LoadStatus {
 
   static LoadStatus fromString(String value) {
     switch (value.toLowerCase()) {
+      case 'published': // <- NUEVO
+        return LoadStatus.published;
       case 'accepted':
         return LoadStatus.accepted;
       case 'intransit':
@@ -23,6 +26,24 @@ enum LoadStatus {
         return LoadStatus.pending;
     }
   }
+
+  String get label {
+    switch (this) {
+      case LoadStatus.pending:
+        return 'Pendiente';
+      case LoadStatus.published: // <- NUEVO
+        return 'Publicada';
+      case LoadStatus.accepted:
+        return 'Aceptada';
+      case LoadStatus.inTransit:
+        return 'En tránsito';
+      case LoadStatus.completed:
+        return 'Completada';
+      case LoadStatus.cancelled:
+        return 'Cancelada';
+    }
+  }
+}
 
   String get label {
     switch (this) {
