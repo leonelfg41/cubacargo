@@ -43,18 +43,20 @@ class FirestoreService {
               };
             }).toList());
   }
-}
 
-Stream<List<Map<String, dynamic>>> streamPublishedLoads() {
-  return _firestore
-      .collection('loads')
-      .where('status', isEqualTo: 'published')
-      .orderBy('createdAt', descending: true)
-      .snapshots()
-      .map((snapshot) => snapshot.docs.map((doc) {
-            return {
-              ...doc.data(),
-              'id': doc.id,
-            };
-          }).toList());
+  /// Cargas con estado "published" para el tablero de conductores
+  /// (tiempo real, más recientes primero).
+  Stream<List<Map<String, dynamic>>> streamPublishedLoads() {
+    return _firestore
+        .collection('loads')
+        .where('status', isEqualTo: 'published')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) {
+              return {
+                ...doc.data(),
+                'id': doc.id,
+              };
+            }).toList());
+  }
 }
